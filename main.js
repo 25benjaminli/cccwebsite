@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GreaterStencilFunc } from 'three';
 
 const arr = [];
+const arrs = []; // speed of turning
 
 function addAdi() {
   const adiTexture = new THREE.TextureLoader().load('adi.jpg');
@@ -15,6 +16,7 @@ function addAdi() {
   adi.position.set(x, y, z);
   scene.add(adi);
   arr.push(adi);
+  arrs.add([THREE.MathUtils.randFloat(0.005, 0.011), THREE.MathUtils.randFloat(0.005, 0.011), THREE.MathUtils.randFloat(0.005, 0.011)]);
 
 }
 
@@ -153,6 +155,8 @@ moveCamera();
 
 // Animation Loop
 
+
+var bool = false;
 function animate() {
   requestAnimationFrame(animate);
 
@@ -169,7 +173,15 @@ function animate() {
 
   // controls.update();
 
-  arr.forEach(adi => adi.rotation.z += 0.01);
+  // arr.forEach((adi, i) => {
+  //   adi.rotation.x += arrs[i][0];
+  //   adi.rotation.y += arrs[i][1];
+  //   adi.rotation.z += arrs[i][2]; 
+  // });
+
+  arr.forEach((adi) => {
+    adi.rotation.y += 0.01;
+  });
 
   renderer.render(scene, camera);
 }
@@ -180,3 +192,32 @@ animate();
 var button = document.getElementById("add-adi");
 
 button.addEventListener('click', addAdi);
+
+const velX = 0.5;
+const velY = 0.3;
+const velZ = 0.5;
+
+document.addEventListener('keydown', event => {
+  console.log(event);
+  switch(event.code) {
+    case "KeyW":
+      camera.position.z -= velZ;
+      console.log("w");
+      break;
+    case "KeyA":
+      camera.position.x -= velX;
+      console.log("a");
+      break;
+    case "KeyS":
+      camera.position.z += velZ;
+      console.log("s");
+      break;
+    case "KeyD":
+      camera.position.x += velX;
+      console.log("d");
+      break;
+    case "Space":
+      camera.position.y += velY;
+      break;
+  }
+})
