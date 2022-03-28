@@ -3,6 +3,22 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GreaterStencilFunc } from 'three';
 
+const arr = [];
+
+function addAdi() {
+  const adiTexture = new THREE.TextureLoader().load('adi.jpg');
+
+  const adi = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ map: adiTexture }));
+
+  const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100));
+  
+  adi.position.set(x, y, z);
+  scene.add(adi);
+  arr.push(adi);
+
+}
+
+
 // Setup
 
 const scene = new THREE.Scene();
@@ -50,6 +66,8 @@ scene.add(gridHelper, axesHelper)
 
 
 const controls = new OrbitControls(camera, renderer.domElement);
+
+
 
 function addStar() {
   const geometry = new THREE.SphereGeometry(0.25, 24, 24);
@@ -151,7 +169,14 @@ function animate() {
 
   // controls.update();
 
+  arr.forEach(adi => adi.rotation.z += 0.01);
+
   renderer.render(scene, camera);
 }
 
 animate();
+
+
+var button = document.getElementById("add-adi");
+
+button.addEventListener('click', addAdi);
