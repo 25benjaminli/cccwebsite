@@ -1,3 +1,3 @@
-{
-    base: '/cccwebsite'
+export default {
+    base: '/cccwebsite/'
 }
