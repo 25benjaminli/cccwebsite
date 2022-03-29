@@ -1,7 +1,7 @@
 // import './style.css';
 // import * as THREE from 'three';
 // import { GreaterStencilFunc } from 'three';
-// import { OrbitControls } from "./orbitcontrols.js";
+import { OrbitControls } from "./orbitcontrols.js";
 
 const arr = [];
 const arrs = []; // speed of turning
@@ -21,6 +21,19 @@ function addAdi() {
 
 }
 
+function addAdiPos(x, y, z) {
+  const adiTexture = new THREE.TextureLoader().load('adi.jpg');
+
+  const adi = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ map: adiTexture }));
+
+  const a = [x, y, z];
+  
+  adi.position.set(a[0], a[1], a[2]);
+  scene.add(adi);
+}
+
+
+
 // setup
 
 const scene = new THREE.Scene();
@@ -31,24 +44,25 @@ const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#bg'),
 });
 
+// const helper = new THREE.CameraHelper( camera );
+// scene.add( helper );
+
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(30);
-camera.position.setX(0);
-// camera.position.setX(-100);
+
 
 
 renderer.render(scene, camera);
 
-// Torus
+// // Torus
 
-const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
-const material = new THREE.MeshStandardMaterial({ color: 0xff6347 });
-const torus = new THREE.Mesh(geometry, material);
-torus.position.x = 20;
-torus.position.y = 5;
-torus.position.z = 20;
-scene.add(torus);
+// const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+// const material = new THREE.MeshStandardMaterial({ color: 0xff6347 });
+// const torus = new THREE.Mesh(geometry, material);
+// torus.position.x = 20;
+// torus.position.y = 5;
+// torus.position.z = 20;
+// scene.add(torus);
 
 // Lights
 
@@ -67,7 +81,7 @@ const axesHelper = new THREE.AxesHelper( 10 ); // default: x = red, y = green, z
 scene.add(gridHelper, axesHelper)
 
 
-// const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 
 
 
@@ -100,10 +114,10 @@ const adi = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasi
 scene.add(adi);
 
 
-const thonkImg = new THREE.TextureLoader().load('thonkcloud.png')
-const thonkCloud = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), new THREE.MeshBasicMaterial({map: thonkImg}));
+// const thonkImg = new THREE.TextureLoader().load('thonkcloud.png')
+// const thonkCloud = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), new THREE.MeshBasicMaterial({map: thonkImg}));
 
-scene.add(thonkCloud)
+// scene.add(thonkCloud)
 // earth
 
 const earthTexture = new THREE.TextureLoader().load('earth.jpeg');
@@ -119,30 +133,51 @@ const earth = new THREE.Mesh(
 
 scene.add(earth);
 
-earth.position.z = 30;
-earth.position.setX(-10);
+adi.position.x = 0;
+adi.position.z = -15;
 
-adi.position.z = -10;
-adi.position.x = 2;
 
-thonkCloud.position.z = 60;
-thonkCloud.position.x = -35;
+earth.position.x = -10;
+earth.position.z = 25;
+
+
+// thonkCloud.position.x = -20;
+// thonkCloud.position.z = 65;
+addAdiPos(-20, 0, 65);
+
+addAdiPos(-10, 0, 105);
+
+addAdiPos(0, 0, 145);
+
+addAdiPos(10, 0, 185);
+
+addAdiPos(20, 0, 225);
+
+// addAdiPos(15, 0, 265);
+
+// addAdiPos(25, 0, 305);
+
+
+camera.position.setZ(400);
+
+// camera.rotation.x = 180;
+
 
 
 // Scroll Animation
 
 function moveCamera() {
   const t = document.body.getBoundingClientRect().top;
-  earth.rotation.x += 0.03;
-  earth.rotation.y += 0.03;
-  earth.rotation.z += 0.03;
+  // earth.rotation.x += 0.03;
+  // earth.rotation.y += 0.03;
+  // earth.rotation.z += 0.03;
 
-  adi.rotation.y += 0.01;
-  adi.rotation.z += 0.01;
+  // adi.rotation.y += 0.01;
+  // adi.rotation.z += 0.01;
 
   camera.position.z = t * -0.06;
   camera.position.x = t * -0.001;
-  camera.rotation.y = t * -0.001;
+  camera.rotation.y = t * -0.0013;
 
   // thonkCloud.position.z = t * -0.03;
   // thonkCloud.position.x = t * -0.01;
@@ -160,16 +195,16 @@ var bool = false;
 function animate() {
   requestAnimationFrame(animate);
 
-  torus.rotation.x += 0.01;
-  torus.rotation.y += 0.005;
-  torus.rotation.z += 0.01;
+  // torus.rotation.x += 0.01;
+  // torus.rotation.y += 0.005;
+  // torus.rotation.z += 0.01;
     
   adi.rotation.y += 0.01;
 //   adi.rotation.z += 0.01;
 
   earth.rotation.y += 0.005;
 
-  thonkCloud.rotation.x += 0.1;
+  // thonkCloud.rotation.x += 0.1;
 
   // controls.update();
 
