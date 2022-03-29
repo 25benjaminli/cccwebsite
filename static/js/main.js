@@ -1,8 +1,5 @@
-import '../css/style.css';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { GreaterStencilFunc } from 'three';
-
+import "/static/css/style.css"
+import { OrbitControls } from "/static/js/orbitcontrols.js"
 const arr = [];
 const arrs = []; // speed of turning
 
