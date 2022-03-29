@@ -1,10 +1,11 @@
-import './style.css';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { GreaterStencilFunc } from 'three';
+// import './style.css';
+// import * as THREE from 'three';
+// import { GreaterStencilFunc } from 'three';
+// import { OrbitControls } from "./orbitcontrols.js";
 
 const arr = [];
 const arrs = []; // speed of turning
+
 
 function addAdi() {
   const adiTexture = new THREE.TextureLoader().load('adi.jpg');
@@ -20,8 +21,7 @@ function addAdi() {
 
 }
 
-
-// Setup
+// setup
 
 const scene = new THREE.Scene();
 
@@ -67,7 +67,7 @@ const axesHelper = new THREE.AxesHelper( 10 ); // default: x = red, y = green, z
 scene.add(gridHelper, axesHelper)
 
 
-const controls = new OrbitControls(camera, renderer.domElement);
+// const controls = new OrbitControls(camera, renderer.domElement);
 
 
 
