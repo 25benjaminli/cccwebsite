@@ -1,4 +1,4 @@
-import './style.css';
+import '../css/style.css';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GreaterStencilFunc } from 'three';
@@ -7,7 +7,7 @@ const arr = [];
 const arrs = []; // speed of turning
 
 function addAdi() {
-  const adiTexture = new THREE.TextureLoader().load('adi.jpg');
+  const adiTexture = new THREE.TextureLoader().load('../adi.jpg');
 
   const adi = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ map: adiTexture }));
 
@@ -88,25 +88,25 @@ Array(200).fill().forEach(addStar);
 
 // Background
 
-const spaceTexture = new THREE.TextureLoader().load('space.jpg');
+const spaceTexture = new THREE.TextureLoader().load('../space.jpg');
 scene.background = spaceTexture;
 
 // Avatar
 
-const adiTexture = new THREE.TextureLoader().load('adi.jpg');
+const adiTexture = new THREE.TextureLoader().load('../adi.jpg');
 
 const adi = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ map: adiTexture }));
 
 scene.add(adi);
 
 
-const thonkImg = new THREE.TextureLoader().load('thonkcloud.png')
+const thonkImg = new THREE.TextureLoader().load('../thonkcloud.png')
 const thonkCloud = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), new THREE.MeshBasicMaterial({map: thonkImg}));
 
 scene.add(thonkCloud)
 // earth
 
-const earthTexture = new THREE.TextureLoader().load('earth.jpeg');
+const earthTexture = new THREE.TextureLoader().load('../earth.jpeg');
 // const normalTexture = new THREE.TextureLoader().load('normal.jpg');
 
 const earth = new THREE.Mesh(
