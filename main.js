@@ -1,7 +1,7 @@
 // import './style.css';
 // import * as THREE from 'three';
 // import { GreaterStencilFunc } from 'three';
-import { OrbitControls } from "./orbitcontrols.js";
+// import { OrbitControls } from "./orbitcontrols.js";
 
 const arr = [];
 const arrs = []; // speed of turning
@@ -81,7 +81,7 @@ const axesHelper = new THREE.AxesHelper( 10 ); // default: x = red, y = green, z
 scene.add(gridHelper, axesHelper)
 
 
-const controls = new OrbitControls(camera, renderer.domElement);
+// const controls = new OrbitControls(camera, renderer.domElement);
 
 
 
