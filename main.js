@@ -6,6 +6,11 @@
 const arr = [];
 const arrs = []; // speed of turning
 
+window.addEventListener('keydown', function(e) {
+  if(e.keyCode == 32 && e.target == document.body) {
+    e.preventDefault();
+  }
+});
 
 function addAdi() {
   const adiTexture = new THREE.TextureLoader().load('adi.jpg');
@@ -83,6 +88,14 @@ scene.add(gridHelper, axesHelper)
 
 // const controls = new OrbitControls(camera, renderer.domElement);
 
+function drawPath(prevx, prevy, prevz) {
+  const geometry = new THREE.SphereGeometry(0.25, 24, 24);
+  const material = new THREE.MeshStandardMaterial({ color: 0x00FF00 });
+  const star = new THREE.Mesh(geometry, material);
+
+  star.position.set(prevx, prevy, prevz);
+  scene.add(star);
+}
 
 
 function addStar() {
@@ -175,10 +188,17 @@ function moveCamera() {
   // adi.rotation.y += 0.01;
   // adi.rotation.z += 0.01;
 
-  camera.position.z = t * -0.06;
-  camera.position.x = t * -0.001;
-  camera.rotation.y = t * -0.0013;
+  console.log("x: " + camera.position.x);
+  console.log("y: " + camera.position.y);
+  console.log("z: " + camera.position.z);
+  console.log("yrot: " + camera.rotation.y);
+  drawPath(camera.position.x, camera.position.y, camera.position.z);
 
+  camera.position.z = t * -0.05;
+  camera.position.x = t * -0.002;
+  camera.rotation.y = t * -0.0011; // rotation
+
+  
   // thonkCloud.position.z = t * -0.03;
   // thonkCloud.position.x = t * -0.01;
   // thonkCloud.rotation.y = t * -0.03;
@@ -228,9 +248,9 @@ var button = document.getElementById("add-adi");
 
 button.addEventListener('click', addAdi);
 
-const velX = 0.5;
-const velY = 0.3;
-const velZ = 0.5;
+const velX = 1;
+const velY = 0.6;
+const velZ = 1;
 
 document.addEventListener('keydown', event => {
   console.log(event);
