@@ -1,5 +1,5 @@
-import "cccwebsite/static/css/style.css"
-import { OrbitControls } from "cccwebsite/static/js/orbitcontrols.js"
+import "/cccwebsite/static/css/style.css"
+import { OrbitControls } from "/cccwebsite/static/js/orbitcontrols.js"
 const arr = [];
 const arrs = []; // speed of turning
 
