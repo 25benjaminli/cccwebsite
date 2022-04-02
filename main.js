@@ -26,14 +26,15 @@ function addAdi() {
 
 }
 
-function addAdiPos(x, y, z) {
-  const adiTexture = new THREE.TextureLoader().load('adi.jpg');
+function addAdiPos(x, y, z, radian) {
+  const adiTexture = new THREE.TextureLoader().load('thonkcloud.png');
 
   const adi = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ map: adiTexture }));
 
   const a = [x, y, z];
   
   adi.position.set(a[0], a[1], a[2]);
+  adi.rotation.y = radian;
   scene.add(adi);
 }
 
@@ -98,6 +99,17 @@ function drawPath(prevx, prevy, prevz) {
 }
 
 
+function drawPath2d(prevx, prevz) {
+  const geometry = new THREE.SphereGeometry(2, 24, 24);
+  const material = new THREE.MeshStandardMaterial({ color: 0x1F51FF });
+  const star = new THREE.Mesh(geometry, material);
+
+  star.position.set(prevx, 20, prevz);
+  scene.add(star);
+}
+
+
+
 function addStar() {
   const geometry = new THREE.SphereGeometry(0.25, 24, 24);
   const material = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
@@ -120,11 +132,11 @@ scene.background = spaceTexture;
 
 // Avatar
 
-const adiTexture = new THREE.TextureLoader().load('adi.jpg');
+// const adiTexture = new THREE.TextureLoader().load('adi.jpg');
 
-const adi = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ map: adiTexture }));
+// const adi = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ map: adiTexture }));
 
-scene.add(adi);
+// scene.add(adi);
 
 
 // const thonkImg = new THREE.TextureLoader().load('thonkcloud.png')
@@ -144,10 +156,34 @@ const earth = new THREE.Mesh(
   })
 );
 
-scene.add(earth);
+var max_count = 15;
+function generateCircle(width, angle = 0, curr_count = 0) {
+  console.log(curr_count);
+  if (curr_count >= max_count) {
+    return;
+  }
+  console.log("angle: " + angle);
+  let x, z, r = width/2;
+  x = r * Math.cos(angle * Math.PI/180);
+  z = r * Math.sin(angle * Math.PI/180);
+  console.log(`x: ${x}, z: ${z}`);
+  addAdiPos(x, 0, z, angle * Math.PI/180);
+  
+  // drawPath2d(x, y);
 
-adi.position.x = 0;
-adi.position.z = -15;
+  // angle * Math.PI/180 <-- this is the degree in which the camera should be facing.
+  // angle to radians
+  // camera.rotation.y = angle * Math.PI/180;
+
+  if (angle + 30 < 360) {
+    setTimeout(() => {
+      generateCircle(width, angle + 30, curr_count + 1);
+    }, 500);
+  }
+}
+
+// scene.add(earth);
+
 
 
 earth.position.x = -10;
@@ -156,27 +192,15 @@ earth.position.z = 25;
 
 // thonkCloud.position.x = -20;
 // thonkCloud.position.z = 65;
-addAdiPos(-20, 0, 65);
-
-addAdiPos(-10, 0, 105);
-
-addAdiPos(0, 0, 145);
-
-addAdiPos(10, 0, 185);
-
-addAdiPos(20, 0, 225);
-
-// addAdiPos(15, 0, 265);
-
-// addAdiPos(25, 0, 305);
 
 
-camera.position.setZ(400);
+
+// camera.position.setZ(400);
 
 // camera.rotation.x = 180;
 
 
-
+generateCircle(100);
 // Scroll Animation
 
 function moveCamera() {
@@ -185,17 +209,16 @@ function moveCamera() {
   // earth.rotation.y += 0.03;
   // earth.rotation.z += 0.03;
 
-  // adi.rotation.y += 0.01;
-  // adi.rotation.z += 0.01;
+
 
   console.log("x: " + camera.position.x);
   console.log("y: " + camera.position.y);
   console.log("z: " + camera.position.z);
-  console.log("yrot: " + camera.rotation.y);
-  drawPath(camera.position.x, camera.position.y, camera.position.z);
+  // console.log("yrot: " + (camera.rotation.y * 360 / Math.PI));
+  // drawPath(camera.position.x, camera.position.y, camera.position.z);
 
-  camera.position.z = t * -0.05;
-  camera.position.x = t * -0.002;
+  // camera.position.z = t * -0.05;
+  // camera.position.x = t * -0.002;
   camera.rotation.y = t * -0.0011; // rotation
 
   
@@ -210,6 +233,10 @@ moveCamera();
 
 // Animation Loop
 
+// camera.rotation.x -= 1.6;
+// camera.rotation.z -= 2;
+// camera.position.y = 75;
+
 
 var bool = false;
 function animate() {
@@ -219,7 +246,7 @@ function animate() {
   // torus.rotation.y += 0.005;
   // torus.rotation.z += 0.01;
     
-  adi.rotation.y += 0.01;
+  // adi.rotation.y += 0.01;
 //   adi.rotation.z += 0.01;
 
   earth.rotation.y += 0.005;
@@ -274,5 +301,8 @@ document.addEventListener('keydown', event => {
     case "Space":
       camera.position.y += velY;
       break;
+    case "KeyR":
+      camera.rotation.x -= 1.6;
+      camera.rotation.z -= 2;
   }
 })
