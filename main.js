@@ -6,6 +6,16 @@
 const arr = [];
 const arrs = []; // speed of turning
 
+const file_paths = [
+  'images/adi.jpg',
+  'images/thonkcloud.png',
+  'images/depression.jpg',
+  'images/moderate_happiness.jpg',
+  'images/more_happiness.jpg',
+  'images/oneaminsanity.jpg'
+];
+
+
 window.addEventListener('keydown', function(e) {
   if(e.keyCode == 32 && e.target == document.body) {
     e.preventDefault();
@@ -34,10 +44,26 @@ function addAdiPos(x, y, z, radian) {
   const a = [x, y, z];
   
   adi.position.set(a[0], a[1], a[2]);
-  adi.rotation.y = radian;
+  
+  setTimeout(() => {
+    adi.rotation.y = -1 * radian;
+  }, 1000);
   scene.add(adi);
 }
 
+function addPicPos(x, y, z, radian, url) {
+  const texture = new THREE.TextureLoader().load(url);
+
+  const img = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ map: texture }));
+
+  const a = [x, y, z];
+  
+  img.position.set(a[0], a[1], a[2]);
+  
+  img.rotation.y = -1 * radian; // need to turn opposite the viewer's perspective
+
+  scene.add(img);
+}
 
 
 // setup
@@ -156,7 +182,7 @@ const earth = new THREE.Mesh(
   })
 );
 
-var max_count = 15;
+var max_count = file_paths.length;
 function generateCircle(width, angle = 0, curr_count = 0) {
   console.log(curr_count);
   if (curr_count >= max_count) {
@@ -167,7 +193,8 @@ function generateCircle(width, angle = 0, curr_count = 0) {
   x = r * Math.cos(angle * Math.PI/180);
   z = r * Math.sin(angle * Math.PI/180);
   console.log(`x: ${x}, z: ${z}`);
-  addAdiPos(x, 0, z, angle * Math.PI/180);
+  addPicPos(x, 0, z, angle * Math.PI/180, file_paths[curr_count]);
+
   
   // drawPath2d(x, y);
 
@@ -216,7 +243,7 @@ function moveCamera() {
   console.log("z: " + camera.position.z);
   // console.log("yrot: " + (camera.rotation.y * 360 / Math.PI));
   // drawPath(camera.position.x, camera.position.y, camera.position.z);
-
+  console.log("camera rot: " + camera.rotation.y);
   // camera.position.z = t * -0.05;
   // camera.position.x = t * -0.002;
   camera.rotation.y = t * -0.0011; // rotation
@@ -236,9 +263,10 @@ moveCamera();
 // camera.rotation.x -= 1.6;
 // camera.rotation.z -= 2;
 // camera.position.y = 75;
-
+camera.rotation.y = 0;
 
 var bool = false;
+
 function animate() {
   requestAnimationFrame(animate);
 
