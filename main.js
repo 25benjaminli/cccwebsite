@@ -39,7 +39,7 @@ function addAdi() {
   adi.position.set(x, y, z);
   scene.add(adi);
   arr.push(adi);
-  arrs.add([THREE.MathUtils.randFloat(0.005, 0.011), THREE.MathUtils.randFloat(0.005, 0.011), THREE.MathUtils.randFloat(0.005, 0.011)]);
+  arrs.push([THREE.MathUtils.randFloat(0.005, 0.011), THREE.MathUtils.randFloat(0.005, 0.011), THREE.MathUtils.randFloat(0.005, 0.011)]);
 
 }
 
@@ -188,31 +188,43 @@ var max_count = people.length;
 const cameraCoords = [];
 
 function generateInnerCircle(width, angleDifference, angle = 0, curr_count = 0) {
-  generateCircle(width, angleDifference, true);
+  // console.log(curr_count);
+  // console.log("angle: " + angle);
+  let x, z, r = width/2;
+  x = r * Math.cos(angle * Math.PI/180);
+  z = r * Math.sin(angle * Math.PI/180);
+  // console.log(`x: ${x}, z: ${z}`);
+  cameraCoords.push({xcoord: x, zcoord: z, rot: (angle * Math.PI/180)});
+  // move to scroll!
+  // camera.position.set(x, 0, z);
+  // camera.rotation.y = -1 * (angle * Math.PI/180) - 1.6;
+  // console.log(`camerax: ${camera.position.x}, cameraz: ${camera.position.z} camerarot: ${camera.rotation.y}`);
+  // console.log("radian should be: " + (angle * Math.PI/180));
+  
+
+  if (angle + angleDifference < 360) {
+    generateInnerCircle(width, angleDifference, angle + angleDifference, curr_count);
+  }
 
   
 }
 
-function generateCircle(width, angleDifference, shouldAddToCamera = false, angle = 0, curr_count = 0) {
+function generateCircle(width, angleDifference, angle = 0, curr_count = 0) {
   console.log(curr_count);
   if (curr_count >= max_count) {
     return;
   }
-  console.log("angle: " + angle);
+  // console.log("angle: " + angle);
   let x, z, r = width/2;
   x = r * Math.cos(angle * Math.PI/180);
   z = r * Math.sin(angle * Math.PI/180);
-  console.log(`x: ${x}, z: ${z}`);
+  // console.log(`x: ${x}, z: ${z}`);
   // re-add after debugging
-  if (!shouldAddToCamera) {
-    addPicPos(x, 0, z, angle * Math.PI/180, people[curr_count]);
-  }
-  if (shouldAddToCamera) {
-    camera.position.set(x, 0, z);
-    camera.rotation.y = -1 * (angle * Math.PI/180) - 1.6;
-    console.log(`camerax: ${camera.position.x}, cameraz: ${camera.position.z} camerarot: ${camera.rotation.y}`);
-    console.log("radian should be: " + (angle * Math.PI/180));
-  }
+  addPicPos(x, 0, z, angle * Math.PI/180, people[curr_count]);
+  // camera.position.set(x, 0, z);
+  // camera.rotation.y = -1 * (angle * Math.PI/180) - 1.6;
+  // console.log(`camerax: ${camera.position.x}, cameraz: ${camera.position.z} camerarot: ${camera.rotation.y}`);
+  // console.log("radian should be: " + (angle * Math.PI/180));
 
 // camera.position.set(35.35, 0, 15.35);
 // x: 35.35533905932738, z: 35.35533905932737
@@ -227,9 +239,8 @@ function generateCircle(width, angleDifference, shouldAddToCamera = false, angle
   // camera.rotation.y = angle * Math.PI/180;
 
   if (angle + angleDifference < 360) {
-    setTimeout(() => {
-      generateCircle(width, angleDifference, shouldAddToCamera, angle + angleDifference, curr_count + 1);
-    }, 1000);
+    generateCircle(width, angleDifference, angle + angleDifference, curr_count + 1);
+
   }
 }
 
@@ -251,8 +262,9 @@ function generateCircle(width, angleDifference, shouldAddToCamera = false, angle
 
 
 generateCircle(100, 45);
-generateInnerCircle(60, 30); // also fills the camera thing with values.
+generateInnerCircle(60, 0.5); // also fills the camera thing with values.
 // Scroll Animation
+
 
 var prev_val = document.body.getBoundingClientRect().top;
 
@@ -260,21 +272,39 @@ var prev_val = document.body.getBoundingClientRect().top;
 var moving = false;
 var inc = 0;
 
+let currindex = 0;
+
+console.log("cameraCoords: ");
+console.log(cameraCoords);
 function moveCamera() {
-  const t = document.body.getBoundingClientRect().top - 792;
+  const t = document.body.getBoundingClientRect().top - 792; // subtract to adjust for positioning.
   // earth.rotation.x += 0.03;
   // earth.rotation.y += 0.03;
   // earth.rotation.z += 0.03;
 
-  console.log("t: " + t);
 
 
 
 
-  console.log("x: " + camera.position.x);
-  console.log("y: " + camera.position.y);
-  console.log("z: " + camera.position.z);
-  console.log("yrot: " + (camera.rotation.y));
+  // console.log("x: " + camera.position.x);
+  // console.log("y: " + camera.position.y);
+  // console.log("z: " + camera.position.z);
+  // console.log("yrot: " + (camera.rotation.y));
+  console.log(cameraCoords[currindex])
+  camera.position.set(cameraCoords[currindex].xcoord, 0, cameraCoords[currindex].zcoord);
+  camera.rotation.y = cameraCoords[currindex].rot;
+  // if (prev_val > t && currindex > 0) {
+  //   console.log("down")
+  //   currindex--; // going back to the front of the circle
+  // }
+  if (prev_val > t && currindex < cameraCoords.length) {
+    console.log("up")
+
+    currindex++;
+  }
+  else if (currindex > 0){
+    currindex--;
+  }
   // // drawPath(camera.position.x, camera.position.y, camera.position.z);
   // console.log("camera rot: " + camera.rotation.y);
   // // camera.position.z = t * -0.05;
@@ -292,15 +322,15 @@ function moveCamera() {
   //   camera.rotation.y += 0.04;
   // }
   
+  // camera.position.set();
+  
 
   camera.rotation.y = t * 0.002;
 
   // thonkCloud.position.z = t * -0.03;
   // thonkCloud.position.x = t * -0.01;
   // thonkCloud.rotation.y = t * -0.03;
-
-  prev_val = t;
-  
+  prev_val = document.body.getBoundingClientRect().top - 792;
 }
 
 document.body.onscroll = moveCamera;
