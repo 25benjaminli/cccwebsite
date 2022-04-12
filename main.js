@@ -186,7 +186,14 @@ scene.background = spaceTexture1;
 var max_count = people.length;
 
 const cameraCoords = [];
-function generateCircle(width, angleDifference, angle = 0, curr_count = 0) {
+
+function generateInnerCircle(width, angleDifference, angle = 0, curr_count = 0) {
+  generateCircle(width, angleDifference, true);
+
+  
+}
+
+function generateCircle(width, angleDifference, shouldAddToCamera = false, angle = 0, curr_count = 0) {
   console.log(curr_count);
   if (curr_count >= max_count) {
     return;
@@ -196,11 +203,22 @@ function generateCircle(width, angleDifference, angle = 0, curr_count = 0) {
   x = r * Math.cos(angle * Math.PI/180);
   z = r * Math.sin(angle * Math.PI/180);
   console.log(`x: ${x}, z: ${z}`);
-  addPicPos(x, 0, z, angle * Math.PI/180, people[curr_count]);
-  
-  for (let i = 0; i < 60; i++) {
-    cameraCoords.push([x - 60, 0, z - 60]);
+  // re-add after debugging
+  if (!shouldAddToCamera) {
+    addPicPos(x, 0, z, angle * Math.PI/180, people[curr_count]);
   }
+  if (shouldAddToCamera) {
+    camera.position.set(x, 0, z);
+    camera.rotation.y = -1 * (angle * Math.PI/180) - 1.6;
+    console.log(`camerax: ${camera.position.x}, cameraz: ${camera.position.z} camerarot: ${camera.rotation.y}`);
+    console.log("radian should be: " + (angle * Math.PI/180));
+  }
+
+// camera.position.set(35.35, 0, 15.35);
+// x: 35.35533905932738, z: 35.35533905932737
+  // camera.position.set(x - 3, 0, z - 20);
+  // camera.rotation.y = angle;
+
   
   // drawPath2d(x, y);
 
@@ -210,8 +228,8 @@ function generateCircle(width, angleDifference, angle = 0, curr_count = 0) {
 
   if (angle + angleDifference < 360) {
     setTimeout(() => {
-      generateCircle(width, angleDifference, angle + angleDifference, curr_count + 1);
-    }, 500);
+      generateCircle(width, angleDifference, shouldAddToCamera, angle + angleDifference, curr_count + 1);
+    }, 1000);
   }
 }
 
@@ -233,6 +251,7 @@ function generateCircle(width, angleDifference, angle = 0, curr_count = 0) {
 
 
 generateCircle(100, 45);
+generateInnerCircle(60, 30); // also fills the camera thing with values.
 // Scroll Animation
 
 var prev_val = document.body.getBoundingClientRect().top;
@@ -242,10 +261,12 @@ var moving = false;
 var inc = 0;
 
 function moveCamera() {
-  const t = document.body.getBoundingClientRect().top;
+  const t = document.body.getBoundingClientRect().top - 792;
   // earth.rotation.x += 0.03;
   // earth.rotation.y += 0.03;
   // earth.rotation.z += 0.03;
+
+  console.log("t: " + t);
 
 
 
@@ -253,19 +274,26 @@ function moveCamera() {
   console.log("x: " + camera.position.x);
   console.log("y: " + camera.position.y);
   console.log("z: " + camera.position.z);
-  // console.log("yrot: " + (camera.rotation.y * 360 / Math.PI));
-  // drawPath(camera.position.x, camera.position.y, camera.position.z);
-  console.log("camera rot: " + camera.rotation.y);
-  // camera.position.z = t * -0.05;
-  // camera.position.x = t * -0.002;
-  if (prev_val > t) {
-    // turning to the right
-    camera.rotation.y += t * 0.0001;
-  }
-  else if (prev_val < t) {
-    // turning to the left
-    camera.rotation.y -= t * 0.0001;
-  }
+  console.log("yrot: " + (camera.rotation.y));
+  // // drawPath(camera.position.x, camera.position.y, camera.position.z);
+  // console.log("camera rot: " + camera.rotation.y);
+  // // camera.position.z = t * -0.05;
+  // // camera.position.x = t * -0.002;
+  // // camera.rotation.y -= 0.04;
+  // if (prev_val > t) {
+  //   // turning to the right
+  //   console.log("hi, right")
+    
+  //   camera.rotation.y -= 0.04;
+  // }
+  // else if (prev_val < t) {
+  //   console.log("hi, left")
+  //   // turning to the left
+  //   camera.rotation.y += 0.04;
+  // }
+  
+
+  camera.rotation.y = t * 0.002;
 
   // thonkCloud.position.z = t * -0.03;
   // thonkCloud.position.x = t * -0.01;
@@ -288,9 +316,9 @@ moveCamera();
 
 var bool = false;
 // camera.rotation.y = 4.7;
-
+// x: 35.35533905932738, z: 35.35533905932737
 camera.position.set(32, 0, 0);
-camera.rotation.y = -1.56;
+// camera.rotation.y = -1.56;
 function animate() {
   requestAnimationFrame(animate);
 
@@ -350,6 +378,7 @@ const velZ = 1;
 
 document.addEventListener('keydown', event => {
   console.log(event);
+  console.log(`${camera.position.x}, ${camera.position.y}, ${camera.position.z}`);
   switch(event.code) {
     case "KeyW":
       camera.position.z -= velZ;
