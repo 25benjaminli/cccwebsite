@@ -74,3 +74,12 @@ a:visited{
   color: blue;
 }
 
+h1 {
+  color: white;
+  background: black;
+}
+
+h2 {
+  color: yellow;
+  background: black;
+}

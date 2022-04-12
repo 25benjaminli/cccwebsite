@@ -6,13 +6,18 @@
 const arr = [];
 const arrs = []; // speed of turning
 
-const file_paths = [
+const people = [
+  'images/ccclogo.png',
   'images/adi.jpg',
   'images/thonkcloud.png',
   'images/depression.jpg',
   'images/moderate_happiness.jpg',
   'images/more_happiness.jpg',
   'images/oneaminsanity.jpg'
+];
+
+const backgrounds = [
+
 ];
 
 
@@ -22,8 +27,10 @@ window.addEventListener('keydown', function(e) {
   }
 });
 
+
+
 function addAdi() {
-  const adiTexture = new THREE.TextureLoader().load('adi.jpg');
+  const adiTexture = new THREE.TextureLoader().load('images/adi.jpg');
 
   const adi = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ map: adiTexture }));
 
@@ -70,7 +77,7 @@ function addPicPos(x, y, z, radian, url) {
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#bg'),
@@ -153,37 +160,33 @@ Array(200).fill().forEach(addStar);
 
 // Background
 
-const spaceTexture = new THREE.TextureLoader().load('space.jpg');
-scene.background = spaceTexture;
+const spaceTexture1 = new THREE.TextureLoader().load('images/space.jpg');
+const spaceTexture2 = new THREE.TextureLoader().load('images/space2.png');
 
-// Avatar
-
-// const adiTexture = new THREE.TextureLoader().load('adi.jpg');
-
-// const adi = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshBasicMaterial({ map: adiTexture }));
-
-// scene.add(adi);
+scene.background = spaceTexture1;
 
 
-// const thonkImg = new THREE.TextureLoader().load('thonkcloud.png')
-// const thonkCloud = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), new THREE.MeshBasicMaterial({map: thonkImg}));
+// logo
 
-// scene.add(thonkCloud)
-// earth
-
-const earthTexture = new THREE.TextureLoader().load('earth.jpeg');
+// const logoTexture = new THREE.TextureLoader().load('images/ccclogo.png');
+// const logo = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshStandardMaterial( {map: logoTexture }));
+// logo.position.set(31, 0, -21);
+// scene.add(logo);
+// const earthTexture = new THREE.TextureLoader().load('earth.jpeg');
 // const normalTexture = new THREE.TextureLoader().load('normal.jpg');
 
-const earth = new THREE.Mesh(
-  new THREE.SphereGeometry(6, 32, 32),
-  new THREE.MeshStandardMaterial({
-    map: earthTexture,
-    // normalMap: normalTexture,
-  })
-);
+// const earth = new THREE.Mesh(
+//   new THREE.SphereGeometry(6, 32, 32),
+//   new THREE.MeshStandardMaterial({
+//     map: earthTexture,
+//     // normalMap: normalTexture,
+//   })
+// );
 
-var max_count = file_paths.length;
-function generateCircle(width, angle = 0, curr_count = 0) {
+var max_count = people.length;
+
+const cameraCoords = [];
+function generateCircle(width, angleDifference, angle = 0, curr_count = 0) {
   console.log(curr_count);
   if (curr_count >= max_count) {
     return;
@@ -193,8 +196,11 @@ function generateCircle(width, angle = 0, curr_count = 0) {
   x = r * Math.cos(angle * Math.PI/180);
   z = r * Math.sin(angle * Math.PI/180);
   console.log(`x: ${x}, z: ${z}`);
-  addPicPos(x, 0, z, angle * Math.PI/180, file_paths[curr_count]);
-
+  addPicPos(x, 0, z, angle * Math.PI/180, people[curr_count]);
+  
+  for (let i = 0; i < 60; i++) {
+    cameraCoords.push([x - 60, 0, z - 60]);
+  }
   
   // drawPath2d(x, y);
 
@@ -202,9 +208,9 @@ function generateCircle(width, angle = 0, curr_count = 0) {
   // angle to radians
   // camera.rotation.y = angle * Math.PI/180;
 
-  if (angle + 30 < 360) {
+  if (angle + angleDifference < 360) {
     setTimeout(() => {
-      generateCircle(width, angle + 30, curr_count + 1);
+      generateCircle(width, angleDifference, angle + angleDifference, curr_count + 1);
     }, 500);
   }
 }
@@ -213,8 +219,8 @@ function generateCircle(width, angle = 0, curr_count = 0) {
 
 
 
-earth.position.x = -10;
-earth.position.z = 25;
+// earth.position.x = -10;
+// earth.position.z = 25;
 
 
 // thonkCloud.position.x = -20;
@@ -224,17 +230,23 @@ earth.position.z = 25;
 
 // camera.position.setZ(400);
 
-// camera.rotation.x = 180;
 
 
-generateCircle(100);
+generateCircle(100, 45);
 // Scroll Animation
+
+var prev_val = document.body.getBoundingClientRect().top;
+
+
+var moving = false;
+var inc = 0;
 
 function moveCamera() {
   const t = document.body.getBoundingClientRect().top;
   // earth.rotation.x += 0.03;
   // earth.rotation.y += 0.03;
   // earth.rotation.z += 0.03;
+
 
 
 
@@ -246,12 +258,20 @@ function moveCamera() {
   console.log("camera rot: " + camera.rotation.y);
   // camera.position.z = t * -0.05;
   // camera.position.x = t * -0.002;
-  camera.rotation.y = t * -0.0011; // rotation
+  if (prev_val > t) {
+    // turning to the right
+    camera.rotation.y += t * 0.0001;
+  }
+  else if (prev_val < t) {
+    // turning to the left
+    camera.rotation.y -= t * 0.0001;
+  }
 
-  
   // thonkCloud.position.z = t * -0.03;
   // thonkCloud.position.x = t * -0.01;
   // thonkCloud.rotation.y = t * -0.03;
+
+  prev_val = t;
   
 }
 
@@ -263,10 +283,14 @@ moveCamera();
 // camera.rotation.x -= 1.6;
 // camera.rotation.z -= 2;
 // camera.position.y = 75;
-camera.rotation.y = 0;
+// camera.rotation.y = 4.9;
+
 
 var bool = false;
+// camera.rotation.y = 4.7;
 
+camera.position.set(32, 0, 0);
+camera.rotation.y = -1.56;
 function animate() {
   requestAnimationFrame(animate);
 
@@ -276,8 +300,9 @@ function animate() {
     
   // adi.rotation.y += 0.01;
 //   adi.rotation.z += 0.01;
+// console.log("selector: " + selector)
 
-  earth.rotation.y += 0.005;
+  // earth.rotation.y += 0.005;
 
   // thonkCloud.rotation.x += 0.1;
 
@@ -288,10 +313,9 @@ function animate() {
   //   adi.rotation.y += arrs[i][1];
   //   adi.rotation.z += arrs[i][2]; 
   // });
-
-  arr.forEach((adi) => {
-    adi.rotation.y += 0.01;
-  });
+  // console.log("x: " + camera.position.x);
+  // console.log("y: " + camera.position.y);
+  // console.log("z: " + camera.position.z);
 
   renderer.render(scene, camera);
 }
@@ -300,8 +324,25 @@ animate();
 
 
 var button = document.getElementById("add-adi");
+var backgroundChanger = document.getElementById("bckgrnd");
 
 button.addEventListener('click', addAdi);
+var selector = 0; 
+backgroundChanger.addEventListener('click', () => {
+  switch(selector) {
+    case 0:
+      selector = 1;
+      scene.background = spaceTexture2;
+      break;
+    case 1:
+      selector = 0;
+      scene.background = spaceTexture1;
+      break;
+    // case 3:
+
+
+  }
+})
 
 const velX = 1;
 const velY = 0.6;
